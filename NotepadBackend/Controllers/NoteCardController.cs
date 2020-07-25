@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using NotepadBackend.Model.Note;
 using NotepadBackend.Model.Repository;
 
 namespace NotepadBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api")]
     [ApiController]
     public class NoteCardController
     {
@@ -19,10 +17,22 @@ namespace NotepadBackend.Controllers
             _repository = repository;
         }
         
-        [HttpGet]
+        [HttpGet("notes")]
         public IEnumerable<NoteCard> ViewAllCards()
         {
             return _repository.NoteCards;
+        }
+
+        [HttpPost("note")]
+        public void CreateCard([FromBody] NoteCard card)
+        {
+            _repository.Add(new NoteCard
+            {
+                Id = _repository.NoteCards.Count,
+                Name = card.Name,
+                CreateTime = DateTime.Now.ToString("yy-MM-dd"),
+                Summary = card.Summary
+            });
         }
     }
 }

@@ -9,12 +9,11 @@ namespace NotepadBackend.Model.Repository
     public class FakeNoteCardRepository : INoteRepository
 
     {
-        public IQueryable<NoteCard> NoteCards { get; set; }
+        public List<NoteCard> NoteCards { get; set; }
 
         public FakeNoteCardRepository()
         {
-            NoteCards = new EnumerableQuery<NoteCard>(
-                new List<NoteCard>
+            NoteCards = new List<NoteCard>
                 {
                     new NoteCard()
                     {
@@ -47,7 +46,12 @@ namespace NotepadBackend.Model.Repository
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                         Summary = "Я помню чудное мнгновенье"
                     }
-                });
+                };
+        }
+
+        public void Add(NoteCard card)
+        {
+            NoteCards.Insert(0, card);
         }
     }
 }

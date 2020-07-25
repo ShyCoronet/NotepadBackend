@@ -16,7 +16,7 @@ namespace NotepadBackend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
-            services.AddScoped<INoteRepository, FakeNoteCardRepository>();
+            services.AddSingleton<INoteRepository, FakeNoteCardRepository>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -30,7 +30,12 @@ namespace NotepadBackend
 
             app.UseRouting();
 
-            app.UseCors(builder => builder.AllowAnyOrigin());
+            app.UseCors(builder =>
+            {
+                builder.AllowAnyOrigin();
+                builder.AllowAnyHeader();
+                builder.AllowAnyMethod();
+            });
 
             app.UseAuthentication();
 

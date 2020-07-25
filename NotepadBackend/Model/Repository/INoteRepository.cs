@@ -8,7 +8,9 @@ namespace NotepadBackend.Model.Repository
 {
     public interface INoteRepository
     {
-        IQueryable<NoteCard> NoteCards { get; set; }
+        List<NoteCard> NoteCards { get; set; }
+
+        void Add(NoteCard card);
 
     }
 }
