@@ -20,31 +20,39 @@ namespace NotepadBackend.Model.Repository
                         Id = 0,
                         Name = "Список покупок",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
-                        Summary = "Молоко"
+                        ViewTime = "Только что",
+                        Summary = "Молоко",
+                        TextContent = "Молоко\nХлеб\nБичпакет"
                     },
 
                     new NoteCard()
                     {
                         Id = 1,
-                        Name = "Стихотоврение",
+                        Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
-                        Summary = "Я помню чудное мнгновенье"
+                        ViewTime = "Только что",
+                        Summary = "Я помню чудное мнгновенье",
+                        TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     },
 
                     new NoteCard()
                     {
                         Id = 2,
-                        Name = "Стихотоврение",
+                        Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
-                        Summary = "Я помню чудное мнгновенье"
+                        ViewTime = "Только что",
+                        Summary = "Я помню чудное мнгновенье",
+                        TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     }, 
 
                     new NoteCard()
                     {
                         Id = 3,
-                        Name = "Стихотоврение",
+                        Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
-                        Summary = "Я помню чудное мнгновенье"
+                        ViewTime = "Только что",
+                        Summary = "Я помню чудное мнгновенье",
+                        TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     }
                 };
         }
@@ -52,6 +60,14 @@ namespace NotepadBackend.Model.Repository
         public void Add(NoteCard card)
         {
             NoteCards.Insert(0, card);
+        }
+
+        public NoteCard Update(NoteCard card)
+        {
+            int index = NoteCards.IndexOf(NoteCards.FirstOrDefault(note => note.Id == card.Id));
+            NoteCards[index] = card;
+
+            return card;
         }
     }
 }

@@ -12,5 +12,7 @@ namespace NotepadBackend.Model.Repository
 
         void Add(NoteCard card);
 
+        NoteCard Update(NoteCard card);
+
     }
 }
