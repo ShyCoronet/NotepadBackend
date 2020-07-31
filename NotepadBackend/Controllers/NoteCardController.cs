@@ -34,7 +34,6 @@ namespace NotepadBackend.Controllers
                 Name = card.Name,
                 CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                 ViewTime = card.ViewTime,
-                Summary = card.Summary,
                 TextContent = card.TextContent
             });
         }

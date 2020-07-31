@@ -12,7 +12,6 @@ namespace NotepadBackend.Model.Note
         public string Name { get; set; }
         public string CreateTime { get; set; }
         public string ViewTime { get; set; }
-        public string Summary { get; set; }
         public string TextContent { get; set; }
     }
 }

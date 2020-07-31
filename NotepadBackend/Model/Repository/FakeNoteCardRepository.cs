@@ -21,7 +21,6 @@ namespace NotepadBackend.Model.Repository
                         Name = "Список покупок",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                         ViewTime = "Только что",
-                        Summary = "Молоко",
                         TextContent = "Молоко\nХлеб\nБичпакет"
                     },
 
@@ -31,7 +30,6 @@ namespace NotepadBackend.Model.Repository
                         Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                         ViewTime = "Только что",
-                        Summary = "Я помню чудное мнгновенье",
                         TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     },
 
@@ -41,7 +39,6 @@ namespace NotepadBackend.Model.Repository
                         Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                         ViewTime = "Только что",
-                        Summary = "Я помню чудное мнгновенье",
                         TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     }, 
 
@@ -51,7 +48,6 @@ namespace NotepadBackend.Model.Repository
                         Name = "Стихотворение",
                         CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                         ViewTime = "Только что",
-                        Summary = "Я помню чудное мнгновенье",
                         TextContent = "Я помню чудное мнгновенье\nПередо мной явилась ты"
                     }
                 };
