@@ -26,16 +26,20 @@ namespace NotepadBackend.Controllers
         }
 
         [HttpPost("note")]
-        public void CreateNote([FromBody] NoteCard card)
+        public NoteCard CreateNote([FromBody] NoteCard card)
         {
-            _repository.Add(new NoteCard()
+            NoteCard newNote = new NoteCard()
             {
                 Id = _repository.NoteCards.Count,
                 Name = card.Name,
                 CreateTime = DateTime.Now.ToString("yy-MM-dd"),
                 ViewTime = card.ViewTime,
                 TextContent = card.TextContent
-            });
+            };
+
+            _repository.Add(newNote);
+
+            return newNote;
         }
 
         [HttpPut("note")]

@@ -55,7 +55,7 @@ namespace NotepadBackend.Model.Repository
 
         public void Add(NoteCard card)
         {
-            NoteCards.Insert(0, card);
+            NoteCards.Add(card);
         }
 
         public NoteCard Update(NoteCard card)
