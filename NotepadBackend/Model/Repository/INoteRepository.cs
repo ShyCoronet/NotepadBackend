@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using NotepadBackend.Model.Note;
+using NotepadBackend.Model;
 
 namespace NotepadBackend.Model.Repository
 {
     public interface INoteRepository
     {
-        List<NoteCard> NoteCards { get; set; }
-
-        void Add(NoteCard card);
-
-        NoteCard Update(NoteCard card);
-
+        IQueryable<Note> Notes { get; }
+        void AddNote(Note note);
+        void UpdateNote(Note note);
+        void DeleteNote(Note note);
     }
 }
