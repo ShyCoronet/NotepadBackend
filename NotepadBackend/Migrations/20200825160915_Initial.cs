@@ -3,10 +3,27 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace NotepadBackend.Migrations
 {
-    public partial class Update_DbContext : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Login = table.Column<string>(maxLength: 20, nullable: false),
+                    Password = table.Column<string>(maxLength: 50, nullable: false),
+                    Email = table.Column<string>(maxLength: 350, nullable: false),
+                    Role = table.Column<string>(maxLength: 20, nullable: false),
+                    RegistrationDateTime = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Notes",
                 columns: table => new
@@ -16,7 +33,7 @@ namespace NotepadBackend.Migrations
                     Name = table.Column<string>(nullable: false),
                     CreationDateTime = table.Column<DateTime>(nullable: false),
                     Content = table.Column<string>(nullable: false),
-                    UserId = table.Column<long>(nullable: false)
+                    UserId = table.Column<long>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -26,7 +43,7 @@ namespace NotepadBackend.Migrations
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -39,6 +56,9 @@ namespace NotepadBackend.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Notes");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }
