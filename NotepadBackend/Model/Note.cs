@@ -13,23 +13,18 @@ namespace NotepadBackend.Model
     public class Note
     {
         public long NoteId { get; set; }
-        [Required] 
         public string Name { get; set; }
-        [Required]
         public DateTime CreationDateTime { get; set; }
-        [Required] 
         public string Content { get; set; }
         public long UserId { get; set; }
-        public User User { get; set; }
         
-        public static Note CreateNote(User user)
+        public static Note CreateNote()
         {
             Note newNote = new Note
             {
                 Name = "",
                 CreationDateTime = DateTime.Now,
                 Content = "",
-                User = user
             };
 
             return newNote;

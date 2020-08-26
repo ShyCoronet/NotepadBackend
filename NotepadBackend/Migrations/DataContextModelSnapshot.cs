@@ -28,16 +28,18 @@ namespace NotepadBackend.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
 
                     b.Property<DateTime>("CreationDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
 
-                    b.Property<long>("UserId")
+                    b.Property<long?>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("NoteId");
@@ -56,41 +58,41 @@ namespace NotepadBackend.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(350)");
+                        .HasColumnType("nvarchar(350)")
+                        .HasMaxLength(350)
+                        .IsUnicode(true);
 
                     b.Property<string>("Login")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(20)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20)
+                        .IsUnicode(true);
 
                     b.Property<string>("Password")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(50)");
+                        .HasColumnType("nvarchar(50)")
+                        .HasMaxLength(50)
+                        .IsUnicode(true);
 
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("NVARCHAR(30)");
+                        .HasColumnType("nvarchar(20)")
+                        .HasMaxLength(20)
+                        .IsUnicode(true);
 
                     b.HasKey("UserId");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("Login")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
             modelBuilder.Entity("NotepadBackend.Model.Note", b =>
                 {
-                    b.HasOne("NotepadBackend.Model.User", "User")
+                    b.HasOne("NotepadBackend.Model.User", null)
                         .WithMany("Notes")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
                 });
 #pragma warning restore 612, 618
         }

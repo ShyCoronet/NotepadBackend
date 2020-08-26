@@ -15,8 +15,23 @@ namespace NotepadBackend.Model
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<User>().HasIndex(user => user.Login).IsUnique();
-            modelBuilder.Entity<User>().HasIndex(user => user.Email).IsUnique();
+            #region UserCreatingPropertys
+
+            modelBuilder.Entity<User>().Property(user => user.Login).HasMaxLength(20).IsUnicode().IsRequired();
+            modelBuilder.Entity<User>().Property(user => user.Password).HasMaxLength(50).IsUnicode().IsRequired();
+            modelBuilder.Entity<User>().Property(user => user.Email).HasMaxLength(350).IsUnicode().IsRequired();
+            modelBuilder.Entity<User>().Property(user => user.Role).HasMaxLength(20).IsUnicode().IsRequired();
+            modelBuilder.Entity<User>().Property(user => user.RegistrationDateTime).IsRequired();
+
+            #endregion
+
+            #region NoteCreatingPropertys
+
+            modelBuilder.Entity<Note>().Property(user => user.Name).IsUnicode().IsRequired();
+            modelBuilder.Entity<Note>().Property(user => user.Content).IsUnicode().IsRequired();
+            modelBuilder.Entity<Note>().Property(user => user.CreationDateTime).IsRequired();
+
+            #endregion
         }
     }
 }

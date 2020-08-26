@@ -20,9 +20,9 @@ namespace NotepadBackend
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.AddTransient<INoteRepository, NoteRepository>();
+            services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<INoteRepository, NoteRepository>();
             string conString = Configuration["ConnectionString:DefaultConnection"];
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(conString));

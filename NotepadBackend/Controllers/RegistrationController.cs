@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
 
@@ -22,7 +17,7 @@ namespace NotepadBackend.Controllers
         }
         
         [HttpPost("registration")]
-        public IActionResult RegistrationUser([FromBody] UserForRegistration user)
+        public IActionResult RegistrationUser([FromBody] User user)
         {
             User newUser = new User
             {
@@ -32,16 +27,10 @@ namespace NotepadBackend.Controllers
                 Role = "user",
                 RegistrationDateTime = DateTime.Now
             };
+            
+            _repository.AddUser(newUser);
 
-            try
-            {
-                _repository.AddUser(newUser);
-                return StatusCode(200);
-            }
-            catch (DbUpdateException e)
-            {
-                return StatusCode(400);
-            }
+            return Ok();
         }
     }
 }

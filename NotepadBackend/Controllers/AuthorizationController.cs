@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using NotepadBackend.JWS;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
@@ -20,6 +24,19 @@ namespace NotepadBackend.Controllers
         public AuthorizationController(IUserRepository repository)
         {
             _repository = repository;
+        }
+
+        [HttpPost("test")]
+        public async Task<IActionResult> Test([FromBody] User user)
+        {
+            User currentUser = await _repository.Users.FirstOrDefaultAsync(u => u.Login == user.Login);
+
+            return Json(new
+            {
+                currentUser.UserId,
+                currentUser.Login,
+                currentUser.Role
+            });
         }
 
         [HttpPost("token")]
@@ -40,7 +57,7 @@ namespace NotepadBackend.Controllers
             var response = new
             {
                 access_token = encodedJwt,
-                login = identity.Name
+                login = identity.Name,
             };
 
             return Json(response);
@@ -55,7 +72,7 @@ namespace NotepadBackend.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimsIdentity.DefaultNameClaimType, user.Login),
-                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role)
             };
 
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "GetToken", ClaimsIdentity.DefaultNameClaimType,

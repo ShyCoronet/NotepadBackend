@@ -1,34 +1,48 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace NotepadBackend.Model.Repository
 {
     public class NoteRepository : INoteRepository
     {
-        public IQueryable<Note> Notes => _context.Notes;
+        public IQueryable<Note> Notes { get; }
 
-        private readonly DataContext _context;
+        private DataContext _context;
 
         public NoteRepository(DataContext context)
         {
             _context = context;
         }
-            
-        public void AddNote(Note note)
+        public void AddNote(long userId, Note note)
         {
-            _context.Add(note);
+            note.UserId = userId;
+            _context.Notes.Add(note);
             _context.SaveChanges();
         }
 
-        public void UpdateNote(Note note)
+        public void UpdateNote(Note updatedNote)
         {
-            _context.Update(note);
+            Note originalNote = GetNote(updatedNote.NoteId);
+            originalNote.Name = updatedNote.Name;
+            originalNote.Content = updatedNote.Content;
             _context.SaveChanges();
         }
 
-        public void DeleteNote(Note note)
+        public void DeleteNote(long noteId)
         {
-            _context.Remove(note);
+            Note deletedNote = GetNote(noteId);
+            _context.Notes.Remove(deletedNote);
             _context.SaveChanges();
+        }
+        
+        public Note GetNote(long noteId)
+        {
+            return _context.Notes.Find(noteId);
+        }
+
+        public IEnumerable<Note> GetNotes(long userId)
+        {
+            return _context.Notes.Where(n => n.UserId == userId);
         }
     }
 }

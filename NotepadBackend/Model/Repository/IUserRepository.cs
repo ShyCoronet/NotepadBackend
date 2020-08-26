@@ -7,7 +7,9 @@ namespace NotepadBackend.Model.Repository
     {
         IQueryable<User> Users { get; }
         void AddUser(User user);
-        void UpdateUser(User user);
-        void DeleteUser(User user);
+        void UpdateUser(User updatedUser);
+        void DeleteUser(long userId);
+        User GetUserByAuthorizationData(string login, string password);
+        User GetUserById(long id);
     }
 }

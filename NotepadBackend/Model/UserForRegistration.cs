@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace NotepadBackend.Model.Repository
 {
-    public class UserForRegistration
+    public class serForRegistration
     {
         public string Login { get; set; }
         public string Password { get; set; }

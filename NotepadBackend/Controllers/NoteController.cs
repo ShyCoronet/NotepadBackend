@@ -9,50 +9,41 @@ using NotepadBackend.Model.Repository;
 namespace NotepadBackend.Controllers
 {
     [Route("api")]
-    [Authorize]
     [ApiController]
     public class NoteController
     {
         private readonly INoteRepository _noteRepository;
-        private readonly IUserRepository _userRepository;
 
-        public NoteController(INoteRepository noteRepository, IUserRepository userRepository)
+        public NoteController(INoteRepository noteRepository)
         {
             _noteRepository = noteRepository;
-            _userRepository = userRepository;
         }
         
         [HttpGet("notes")]
-        public IEnumerable<Note> GetAllNotes([FromBody] string login)
+        public IEnumerable<Note> GetNotes([FromBody] long userId)
         {
-            var notes = _noteRepository.Notes.Where(note => note.User.Login == login);
-            return notes;
+            return _noteRepository.GetNotes(userId);
         }
 
         [HttpPost("note")]
-        public object CreateNote([FromBody] string login)
+        public Note CreateNote([FromBody] long userId)
         {
-            User user = _userRepository.Users.FirstOrDefault(user => user.Login == login);
-            Note newNote = Note.CreateNote(user);
-            _noteRepository.AddNote(newNote);
-            
-            return new
-            {
-                newNote.NoteId,
-                newNote.Name,
-                newNote.Content,
-                CreationTime = newNote.CreationDateTime
-            };
+            Note newNote = Note.CreateNote();
+            _noteRepository.AddNote(userId, newNote);
+            return newNote;
         }
 
         [HttpPut("note")]
-        public Note UpdateNote([FromBody] Note note)
+        public Note UpdateNote([FromBody] Note updatedNote)
         {
-            Note updateNote = _noteRepository.Notes.FirstOrDefault(n => n.NoteId == note.NoteId);
-            updateNote.Name = note.Name;
-            updateNote.Content = note.Content;
-            _noteRepository.UpdateNote(updateNote);
-            return updateNote;
+            _noteRepository.UpdateNote(updatedNote);
+            return updatedNote;
+        }
+
+        [HttpDelete("note")]
+        public void DeleteNote([FromBody] long noteId)
+        {
+            _noteRepository.DeleteNote(noteId);
         }
     }
 }
