@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NotepadBackend.JWS
 {
-    public class TokenOptions
+    public static class TokenConfigurations
     {
         public const string Issuer = "MyAuthServer";
         public const string Audience = "NoteAppClient";

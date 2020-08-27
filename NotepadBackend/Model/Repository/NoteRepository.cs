@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NotepadBackend.Model.Repository
@@ -20,24 +21,33 @@ namespace NotepadBackend.Model.Repository
             _context.SaveChanges();
         }
 
-        public void UpdateNote(Note updatedNote)
+        public void UpdateNote(long userId, Note updatedNote)
         {
-            Note originalNote = GetNote(updatedNote.NoteId);
-            originalNote.Name = updatedNote.Name;
-            originalNote.Content = updatedNote.Content;
-            _context.SaveChanges();
+            Note originalNote = GetNote(userId, updatedNote.NoteId);
+            
+            if (originalNote != null)
+            {
+                originalNote.Name = updatedNote.Name;
+                originalNote.Content = updatedNote.Content;
+                _context.SaveChanges();
+            }
         }
 
-        public void DeleteNote(long noteId)
+        public void DeleteNote(long userId, long noteId)
         {
-            Note deletedNote = GetNote(noteId);
-            _context.Notes.Remove(deletedNote);
-            _context.SaveChanges();
+            Note deletedNote = GetNote(userId, noteId);
+
+            if (deletedNote != null)
+            {
+                _context.Notes.Remove(deletedNote);
+                _context.SaveChanges();
+            }
         }
         
-        public Note GetNote(long noteId)
+        public Note GetNote(long userId, long noteId)
         {
-            return _context.Notes.Find(noteId);
+            return _context.Notes.FirstOrDefault(
+                n => n.UserId == userId && n.NoteId == noteId);
         }
 
         public IEnumerable<Note> GetNotes(long userId)

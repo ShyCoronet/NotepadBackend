@@ -1,6 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotepadBackend.Model;
@@ -9,8 +9,9 @@ using NotepadBackend.Model.Repository;
 namespace NotepadBackend.Controllers
 {
     [Route("api")]
+    [Authorize]
     [ApiController]
-    public class NoteController
+    public class NoteController : Controller
     {
         private readonly INoteRepository _noteRepository;
 
@@ -20,30 +21,39 @@ namespace NotepadBackend.Controllers
         }
         
         [HttpGet("notes")]
-        public IEnumerable<Note> GetNotes([FromBody] long userId)
+        public IEnumerable<Note> GetNotes()
         {
-            return _noteRepository.GetNotes(userId);
+            return _noteRepository.GetNotes(GetUserIdFromRequest());
         }
 
         [HttpPost("note")]
-        public Note CreateNote([FromBody] long userId)
+        public Note CreateNote()
         {
             Note newNote = Note.CreateNote();
-            _noteRepository.AddNote(userId, newNote);
+            _noteRepository.AddNote(GetUserIdFromRequest(), newNote);
             return newNote;
         }
 
         [HttpPut("note")]
         public Note UpdateNote([FromBody] Note updatedNote)
         {
-            _noteRepository.UpdateNote(updatedNote);
+            _noteRepository.UpdateNote(GetUserIdFromRequest(), updatedNote);
             return updatedNote;
         }
 
         [HttpDelete("note")]
         public void DeleteNote([FromBody] long noteId)
         {
-            _noteRepository.DeleteNote(noteId);
+            _noteRepository.DeleteNote(GetUserIdFromRequest(), noteId);
+        }
+
+        private long GetUserIdFromRequest()
+        {
+            ClaimsIdentity identity = HttpContext.User.Identity as ClaimsIdentity;
+            long userId = long.Parse(identity.Claims.FirstOrDefault(
+                c => c.Type == ClaimTypes.NameIdentifier).Value);
+
+            return userId;
         }
     }
 }

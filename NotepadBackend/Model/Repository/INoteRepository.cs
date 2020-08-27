@@ -7,9 +7,9 @@ namespace NotepadBackend.Model.Repository
     {
         IQueryable<Note> Notes { get; }
         void AddNote(long userId, Note note);
-        void UpdateNote(Note updatedNote);
-        void DeleteNote(long noteId);
-        Note GetNote(long noteId);
+        void UpdateNote(long userId, Note updatedNote);
+        void DeleteNote(long userId, long noteId);
+        Note GetNote(long userId, long noteId);
         IEnumerable<Note> GetNotes(long userId);
     }
 }

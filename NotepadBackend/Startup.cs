@@ -6,9 +6,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using NotepadBackend.JWS;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
-using TokenOptions = NotepadBackend.JWS.TokenOptions;
 
 namespace NotepadBackend
 {
@@ -20,6 +20,7 @@ namespace NotepadBackend
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMvc();
             services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<INoteRepository, NoteRepository>();
@@ -32,11 +33,11 @@ namespace NotepadBackend
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = TokenOptions.Issuer,
+                    ValidIssuer = TokenConfigurations.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = TokenOptions.Audience,
+                    ValidAudience = TokenConfigurations.Audience,
                     ValidateLifetime = true,
-                    IssuerSigningKey = TokenOptions.GetSymmetricSecurityKey(),
+                    IssuerSigningKey = TokenConfigurations.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
                 };
             });
