@@ -40,8 +40,7 @@ namespace NotepadBackend.Controllers
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
             var response = new
             {
-                access_token = encodedJwt,
-                login = identity.Name,
+                access_token = encodedJwt
             };
             
             return Json(response);
