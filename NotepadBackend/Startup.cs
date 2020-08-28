@@ -24,6 +24,7 @@ namespace NotepadBackend
             services.AddControllers().AddNewtonsoftJson();
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<INoteRepository, NoteRepository>();
+            services.AddTransient<IJwtService, JwtService>();
             string conString = Configuration["ConnectionString:DefaultConnection"];
             services.AddDbContext<DataContext>(options =>
                 options.UseSqlServer(conString));
@@ -33,11 +34,11 @@ namespace NotepadBackend
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
-                    ValidIssuer = TokenConfigurations.Issuer,
+                    ValidIssuer = TokenConfiguration.Issuer,
                     ValidateAudience = true,
-                    ValidAudience = TokenConfigurations.Audience,
+                    ValidAudience = TokenConfiguration.Audience,
                     ValidateLifetime = true,
-                    IssuerSigningKey = TokenConfigurations.GetSymmetricSecurityKey(),
+                    IssuerSigningKey = TokenConfiguration.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
                 };
             });
