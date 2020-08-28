@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
@@ -21,7 +22,7 @@ namespace NotepadBackend.Controllers
         }
         
         [HttpGet("notes")]
-        public IEnumerable<Note> GetNotes()
+        public IEnumerable GetNotes()
         {
             return _noteRepository.GetNotes(GetUserIdFromRequest());
         }
