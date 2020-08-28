@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace NotepadBackend.Model.Repository
@@ -10,6 +11,6 @@ namespace NotepadBackend.Model.Repository
         void UpdateNote(long userId, Note updatedNote);
         void DeleteNote(long userId, long noteId);
         Note GetNote(long userId, long noteId);
-        IEnumerable<Note> GetNotes(long userId);
+        IEnumerable GetNotes(long userId);
     }
 }
