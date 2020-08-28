@@ -16,6 +16,7 @@ namespace NotepadBackend.Model
         public string Email { get; set; }
         public string Role { get; set; }
         public DateTime RegistrationDateTime { get; set; }
+        public string RefreshToken { get; set; }
         public IEnumerable<Note> Notes { get; set; }
     }
 }
