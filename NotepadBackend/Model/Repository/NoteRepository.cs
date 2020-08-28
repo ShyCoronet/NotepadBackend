@@ -8,7 +8,7 @@ namespace NotepadBackend.Model.Repository
     {
         public IQueryable<Note> Notes { get; }
 
-        private DataContext _context;
+        private readonly DataContext _context;
 
         public NoteRepository(DataContext context)
         {
@@ -50,9 +50,17 @@ namespace NotepadBackend.Model.Repository
                 n => n.UserId == userId && n.NoteId == noteId);
         }
 
-        public IEnumerable<Note> GetNotes(long userId)
+        public IEnumerable GetNotes(long userId)
         {
-            return _context.Notes.Where(n => n.UserId == userId);
+            return _context.Notes
+                .Where(n => n.UserId == userId)
+                .Select(n => new
+                {
+                    n.NoteId,
+                    n.Name,
+                    n.Content,
+                    n.CreationDateTime
+                });
         }
     }
 }
