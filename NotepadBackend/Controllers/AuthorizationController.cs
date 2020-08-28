@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Mvc;
 using NotepadBackend.JWS;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
@@ -15,52 +10,47 @@ namespace NotepadBackend.Controllers
     public class AuthorizationController : Controller
     {
         private readonly IUserRepository _repository;
+        private readonly IJwtService _jwtService;
 
-        public AuthorizationController(IUserRepository repository)
+        public AuthorizationController(IUserRepository repository,
+            IJwtService jwtService)
         {
             _repository = repository;
+            _jwtService = jwtService;
         }
 
         [HttpPost("token")]
-        public IActionResult Token([FromBody] User user)
+        public IActionResult GetTokens([FromBody] User user)
         {
-            ClaimsIdentity identity = GetIdentity(user.Login, user.Password);
-            
-            if (identity == null) return new BadRequestResult();
-            
-            DateTime utcNow = DateTime.UtcNow;
-            JwtSecurityToken jwt = new JwtSecurityToken(
-                issuer: TokenConfigurations.Issuer,
-                audience: TokenConfigurations.Audience,
-                notBefore: utcNow,
-                claims: identity.Claims,
-                expires: utcNow.Add(TimeSpan.FromMinutes(TokenConfigurations.LifeTime)),
-                signingCredentials: new SigningCredentials(TokenConfigurations.GetSymmetricSecurityKey(),
-                    SecurityAlgorithms.HmacSha256));
-            string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            var response = new
-            {
-                access_token = encodedJwt
-            };
-            
-            return Json(response);
+            User accessUser = _repository.
+                GetUserByAuthorizationData(user.Login, user.Password);
+
+            if (accessUser == null) return new BadRequestResult();
+
+            string accessToken = _jwtService.GenerateAccessToken(accessUser);
+            string refreshToken = _jwtService.GenerateRefreshToken();
+            accessUser.RefreshToken = refreshToken;
+            _repository.UpdateUser(accessUser);
+            HttpContext.Response.Cookies.Append("refreshToken", refreshToken);
+
+            return Json(accessToken);
         }
 
-        private ClaimsIdentity GetIdentity(string login, string password)
+        [HttpGet("token")]
+        public IActionResult RefreshTokens()
         {
-            User user = _repository.GetUserByAuthorizationData(login, password);
-
-            if (user == null) return null;
-
-            List<Claim> claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
-            ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "GetToken", ClaimTypes.NameIdentifier,
-                ClaimTypes.Role);
+            string pastRefreshToken = HttpContext.Request.Cookies?["refreshToken"];
+            User user = _repository.GetUserByToken(pastRefreshToken);
             
-            return claimsIdentity;
+            if (user == null) return new BadRequestResult();
+
+            string accessToken = _jwtService.GenerateAccessToken(user);
+            string newRefreshToken = _jwtService.GenerateRefreshToken();
+            user.RefreshToken = newRefreshToken;
+            _repository.UpdateUser(user);
+            HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken);
+            
+            return Json(accessToken);
         }
     }
 }
