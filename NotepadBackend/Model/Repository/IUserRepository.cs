@@ -10,5 +10,6 @@ namespace NotepadBackend.Model.Repository
         void DeleteUser(long userId);
         User GetUserByAuthorizationData(string login, string password);
         User GetUserById(long id);
+        User GetUserByToken(string token);
     }
 }
