@@ -18,14 +18,16 @@ namespace NotepadBackend.Model
             modelBuilder.Entity<User>().Property(user => user.Email).HasMaxLength(350).IsUnicode().IsRequired();
             modelBuilder.Entity<User>().Property(user => user.Role).HasMaxLength(20).IsUnicode().IsRequired();
             modelBuilder.Entity<User>().Property(user => user.RegistrationDateTime).IsRequired();
+            modelBuilder.Entity<User>().Property(user => user.RefreshToken).HasMaxLength(500).IsUnicode().IsRequired();
 
             #endregion
 
             #region NoteCreatingPropertys
 
-            modelBuilder.Entity<Note>().Property(user => user.Name).IsUnicode().IsRequired();
-            modelBuilder.Entity<Note>().Property(user => user.Content).IsUnicode().IsRequired();
-            modelBuilder.Entity<Note>().Property(user => user.CreationDateTime).IsRequired();
+            modelBuilder.Entity<Note>().Property(note => note.Name).IsUnicode().IsRequired();
+            modelBuilder.Entity<Note>().Property(note => note.Content).IsUnicode().IsRequired();
+            modelBuilder.Entity<Note>().Property(note => note.CreationDateTime).IsRequired();
+            modelBuilder.Entity<Note>().Property(note => note.UserId).IsRequired();
 
             #endregion
         }
