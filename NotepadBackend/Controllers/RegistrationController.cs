@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
+using NotepadBackend.JWS;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
 
@@ -10,10 +11,13 @@ namespace NotepadBackend.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly IUserRepository _repository;
+        private readonly IJwtService _jwtService;
 
-        public RegistrationController(IUserRepository repository)
+        public RegistrationController(IUserRepository repository,
+            IJwtService jwtService)
         {
             _repository = repository;
+            _jwtService = jwtService;
         }
         
         [HttpPost("registration")]
@@ -25,7 +29,8 @@ namespace NotepadBackend.Controllers
                 Password = user.Password,
                 Email = user.Email,
                 Role = "user",
-                RegistrationDateTime = DateTime.Now
+                RegistrationDateTime = DateTime.Now,
+                RefreshToken = _jwtService.GenerateRefreshToken()
             };
             
             _repository.AddUser(newUser);
