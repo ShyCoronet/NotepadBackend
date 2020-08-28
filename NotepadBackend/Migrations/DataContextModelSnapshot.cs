@@ -39,7 +39,7 @@ namespace NotepadBackend.Migrations
                         .HasColumnType("nvarchar(max)")
                         .IsUnicode(true);
 
-                    b.Property<long?>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("NoteId");
@@ -74,6 +74,12 @@ namespace NotepadBackend.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(500)")
+                        .HasMaxLength(500)
+                        .IsUnicode(true);
+
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("datetime2");
 
@@ -92,7 +98,9 @@ namespace NotepadBackend.Migrations
                 {
                     b.HasOne("NotepadBackend.Model.User", null)
                         .WithMany("Notes")
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
