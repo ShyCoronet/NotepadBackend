@@ -25,6 +25,7 @@ namespace NotepadBackend.Model.Repository
             originalUser.Login = updatedUser.Login;
             originalUser.Email = updatedUser.Email;
             originalUser.Password = updatedUser.Password;
+            originalUser.RefreshToken = updatedUser.RefreshToken;
             _context.SaveChanges();
         }
 
@@ -44,6 +45,11 @@ namespace NotepadBackend.Model.Repository
         {
             return _context.Users.FirstOrDefault(user => 
                 user.Login == login && user.Password == password);
+        }
+
+        public User GetUserByToken(string token)
+        {
+            return _context.Users.FirstOrDefault(user => user.RefreshToken == token);
         }
     }
 }
