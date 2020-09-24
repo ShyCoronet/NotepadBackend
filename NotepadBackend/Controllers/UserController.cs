@@ -31,7 +31,8 @@ namespace NotepadBackend.Controllers
                 user.UserId,
                 user.Login,
                 user.Email,
-                RegistrationDateTime = user.RegistrationDateTime.ToString("MM/dd/yyyy")
+                RegistrationDateTime = 
+                    user.RegistrationDateTime.ToString("MM/dd/yyyy")
             });
         }
     }
