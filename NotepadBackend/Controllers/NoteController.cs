@@ -1,10 +1,13 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using NotepadBackend.Model;
+using NotepadBackend.Model.Exceptions;
 using NotepadBackend.Model.Repository;
 
 namespace NotepadBackend.Controllers
@@ -22,9 +25,11 @@ namespace NotepadBackend.Controllers
         }
         
         [HttpGet("notes")]
-        public IEnumerable GetNotes()
+        public IEnumerable<Note> GetNotes()
         {
-            return _noteRepository.GetNotes(GetUserIdFromRequest());
+            IEnumerable<Note> notes = _noteRepository
+                .GetNotes(GetUserIdFromRequest());
+            return notes;
         }
 
         [HttpPost("note")]
@@ -43,9 +48,10 @@ namespace NotepadBackend.Controllers
         }
 
         [HttpDelete("note")]
-        public void DeleteNote([FromBody] long noteId)
+        public long DeleteNote([FromBody] long noteId)
         {
             _noteRepository.DeleteNote(GetUserIdFromRequest(), noteId);
+            return noteId;
         }
 
         private long GetUserIdFromRequest()
