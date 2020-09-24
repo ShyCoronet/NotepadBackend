@@ -4,7 +4,7 @@ namespace NotepadBackend.JWS
 {
     public interface IJwtService
     {
-        public string GenerateAccessToken(User user);
-        public string GenerateRefreshToken();
+        public AccessToken GenerateAccessTokenData(User user);
+        public RefreshToken GenerateRefreshTokenData();
     }
 }
