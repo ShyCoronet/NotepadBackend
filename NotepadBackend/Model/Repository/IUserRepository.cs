@@ -8,8 +8,10 @@ namespace NotepadBackend.Model.Repository
         void AddUser(User user);
         void UpdateUser(User updatedUser);
         void DeleteUser(long userId);
-        User GetUserByAuthorizationData(string login, string password);
+        User TryGetUserByAuthorizationData(string login, string password);
         User GetUserById(long id);
         User GetUserByToken(string token);
+        User TryGetUserByLogin(string login);
+        User TryGetUserByEmail(string email);
     }
 }
