@@ -11,6 +11,6 @@ namespace NotepadBackend.Model.Repository
         void UpdateNote(long userId, Note updatedNote);
         void DeleteNote(long userId, long noteId);
         Note GetNote(long userId, long noteId);
-        IEnumerable GetNotes(long userId);
+        IEnumerable<Note> GetNotes(long userId);
     }
 }
