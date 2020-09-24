@@ -8,8 +8,8 @@ namespace NotepadBackend.JWS
         public const string Issuer = "MyAuthServer";
         public const string Audience = "NoteAppClient";
         private const string Key = "viefmbldgrmndsbjsrk349456nvsk378gopsjmg349";
-        public const int AccessLifeTime = 5;
-        public const int RefreshLifeTime = 15;
+        public const int AccessLifeTime = 60;
+        public const int RefreshLifeTime = 43800;
 
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
