@@ -32,7 +32,10 @@ namespace NotepadBackend.Migrations
                         .IsUnicode(true);
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("smalldatetime");
+
+                    b.Property<long>("CreationDateTimeInSeconds")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -90,6 +93,9 @@ namespace NotepadBackend.Migrations
                         .IsUnicode(true);
 
                     b.HasKey("UserId");
+
+                    b.HasIndex("Login")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
