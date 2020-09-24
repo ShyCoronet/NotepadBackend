@@ -23,34 +23,41 @@ namespace NotepadBackend.Controllers
         public IActionResult GetTokens([FromBody] User user)
         {
             User accessUser = _repository.
-                GetUserByAuthorizationData(user.Login, user.Password);
+                TryGetUserByAuthorizationData(user.Login, user.Password);
 
             if (accessUser == null) return new BadRequestResult();
 
-            string accessToken = _jwtService.GenerateAccessToken(accessUser);
-            string refreshToken = _jwtService.GenerateRefreshToken();
-            accessUser.RefreshToken = refreshToken;
+            var accessTokenData = _jwtService.GenerateAccessTokenData(accessUser);
+            var refreshTokenData = _jwtService.GenerateRefreshTokenData();
+            accessUser.RefreshToken = refreshTokenData.Token;
             _repository.UpdateUser(accessUser);
-            HttpContext.Response.Cookies.Append("refreshToken", refreshToken);
 
-            return Json(accessToken);
+            return Json(new
+            {
+                accessToken = accessTokenData.Token,
+                lifeTimeInSeconds = accessTokenData.LifeTimeInSeconds,
+                refreshToken = refreshTokenData.Token
+            });
         }
 
-        [HttpGet("token")]
-        public IActionResult RefreshTokens()
+        [HttpPost("refresh_token")]
+        public IActionResult RefreshTokens([FromBody]string pastRefreshToken)
         {
-            string pastRefreshToken = HttpContext.Request.Cookies?["refreshToken"];
             User user = _repository.GetUserByToken(pastRefreshToken);
             
             if (user == null) return new BadRequestResult();
 
-            string accessToken = _jwtService.GenerateAccessToken(user);
-            string newRefreshToken = _jwtService.GenerateRefreshToken();
-            user.RefreshToken = newRefreshToken;
+            var accessTokenData = _jwtService.GenerateAccessTokenData(user);
+            var newRefreshToken = _jwtService.GenerateRefreshTokenData();
+            user.RefreshToken = newRefreshToken.Token;
             _repository.UpdateUser(user);
-            HttpContext.Response.Cookies.Append("refreshToken", newRefreshToken);
-            
-            return Json(accessToken);
+
+            return Json(new
+            {
+                accessToken = accessTokenData.Token,
+                lifeTimeInSeconds = accessTokenData.LifeTimeInSeconds,
+                refreshToken = newRefreshToken.Token
+            });
         }
     }
 }
