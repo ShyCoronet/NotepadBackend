@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace NotepadBackend.JWS
@@ -7,7 +8,7 @@ namespace NotepadBackend.JWS
     {
         public const string Issuer = "MyAuthServer";
         public const string Audience = "NoteAppClient";
-        private const string Key = "viefmbldgrmndsbjsrk349456nvsk378gopsjmg349";
+        private static string Key { get; } = Environment.GetEnvironmentVariable("TokenSecretKey");
         public const int AccessLifeTime = 60;
         public const int RefreshLifeTime = 43800;
 
