@@ -8,29 +8,34 @@ namespace NotepadBackend.Model
 
         public DbSet<User> Users { get; set; }
         public DbSet<Note> Notes { get; set; }
+        private DbSet<RefreshToken> RefreshTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            #region UserCreatingPropertys
+            #region UserDbSettings
 
             modelBuilder.Entity<User>().Property(user => user.Login).HasMaxLength(20).IsUnicode().IsRequired();
             modelBuilder.Entity<User>().HasIndex(user => user.Login).IsUnique();
             modelBuilder.Entity<User>().Property(user => user.Password).HasMaxLength(50).IsUnicode().IsRequired();
             modelBuilder.Entity<User>().Property(user => user.Email).HasMaxLength(350).IsUnicode().IsRequired();
-            modelBuilder.Entity<User>().Property(user => user.Role).HasMaxLength(20).IsUnicode().IsRequired();
             modelBuilder.Entity<User>().Property(user => user.RegistrationDateTime).IsRequired();
-            modelBuilder.Entity<User>().Property(user => user.RefreshToken).HasMaxLength(500).IsUnicode().IsRequired();
 
             #endregion
 
-            #region NoteCreatingPropertys
+            #region NoteDbSettings
 
             modelBuilder.Entity<Note>().Property(note => note.Name).IsUnicode().IsRequired();
             modelBuilder.Entity<Note>().Property(note => note.Content).IsUnicode().IsRequired();
-            modelBuilder.Entity<Note>().Property(note => note.CreationDateTime).IsRequired()
-                .HasColumnType("smalldatetime");
+            modelBuilder.Entity<Note>().Property(note => note.CreationDateTime).IsRequired();
             modelBuilder.Entity<Note>().Property(note => note.UserId).IsRequired();
-            modelBuilder.Entity<Note>().Property(note => note.CreationDateTimeInSeconds).IsRequired();
+
+            #endregion
+
+            #region TokenDbSettings
+
+            modelBuilder.Entity<RefreshToken>().HasKey(token => token.TokenId);
+            modelBuilder.Entity<RefreshToken>().Property(token => token.Value).IsUnicode().IsRequired();
+            modelBuilder.Entity<RefreshToken>().Property(token => token.DeathTime).IsRequired();
 
             #endregion
         }
