@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using NotepadBackend.JWS;
 using NotepadBackend.Model;
 using NotepadBackend.Model.Repository;
 using NotepadBackend.Utils;
@@ -7,17 +9,19 @@ using NotepadBackend.Utils;
 namespace NotepadBackend.Controllers
 {
     [Route("api")]
-    [Authorize]
     [ApiController]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
+        private readonly IJwtService _jwtService;
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IJwtService jwtService)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
         }
         
+        [Authorize]
         [HttpGet("user")]
         public IActionResult GetUser()
         {
@@ -35,5 +39,42 @@ namespace NotepadBackend.Controllers
                     user.RegistrationDateTime.ToString("MM/dd/yyyy")
             });
         }
+        
+        [HttpPost("sign_up")]
+        public IActionResult SignUpUser([FromBody] User user)
+        {
+            if (!LoginCheckForUniqueness(user.Login) 
+                || !EmailCheckForUniqueness(user.Email))
+                return new BadRequestResult();
+
+            User newUser = new User
+            {
+                Login = user.Login,
+                Password = user.Password,
+                Email = user.Email,
+                Role = "user",
+                RegistrationDateTime = DateTime.Now,
+                RefreshToken = _jwtService.GenerateRefreshTokenData().Token
+            };
+            
+            _userRepository.AddUser(newUser);
+
+            return Ok();
+        }
+        
+        private bool LoginCheckForUniqueness(string login)
+        {
+            User userByLogin = _userRepository.TryGetUserByLogin(login);
+
+            return userByLogin == null;
+        }
+
+        private bool EmailCheckForUniqueness(string email)
+        {
+            User userByEmail = _userRepository.TryGetUserByEmail(email);
+
+            return userByEmail == null;
+        }
+        
     }
 }
