@@ -13,5 +13,6 @@ namespace NotepadBackend.Model.Repository
         User GetUserByToken(string token);
         User TryGetUserByLogin(string login);
         User TryGetUserByEmail(string email);
+        User TryGetUserWithTokenByToken(string token);
     }
 }
