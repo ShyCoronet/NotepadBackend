@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using NotepadBackend.Model.Exceptions;
 
 namespace NotepadBackend.Model.Repository
@@ -34,7 +35,7 @@ namespace NotepadBackend.Model.Repository
             originalUser.Login = updatedUser.Login;
             originalUser.Email = updatedUser.Email;
             originalUser.Password = updatedUser.Password;
-            originalUser.RefreshToken = updatedUser.RefreshToken;
+            originalUser.RefreshTokenData = updatedUser.RefreshTokenData;
             
             _context.SaveChanges();
         }
@@ -74,7 +75,7 @@ namespace NotepadBackend.Model.Repository
         }
         
         /// <summary>
-        /// Returns the User from the database by login and password, otherwise returns null
+        /// Returns the User from the database by login and password, if no user is found, returns null
         /// </summary>
         /// <param name="login"></param>
         /// <param name="password"></param>
@@ -93,7 +94,8 @@ namespace NotepadBackend.Model.Repository
         /// <exception cref="IncorrectUserDataException"></exception>
         public User GetUserByToken(string token)
         {
-            User user = _context.Users.FirstOrDefault(u => u.RefreshToken == token);
+            User user = _context.Users.Include(u => u.RefreshTokenData)
+                .FirstOrDefault(r => r.RefreshTokenData.Value == token);
             
             if (user == null)
                 throw new IncorrectUserDataException(
@@ -103,7 +105,7 @@ namespace NotepadBackend.Model.Repository
         }
 
         /// <summary>
-        /// Returns the User from the database by login, otherwise returns null
+        /// Returns the User from the database by login, if no user is found, returns null
         /// </summary>
         /// <param name="login"></param>
         /// <returns></returns>
@@ -115,13 +117,26 @@ namespace NotepadBackend.Model.Repository
         }
 
         /// <summary>
-        /// Returns the User from the database by email, otherwise returns null
+        /// Returns the User from the database by email, if no user is found, returns null
         /// </summary>
         /// <param name="email"></param>
         /// <returns></returns>
         public User TryGetUserByEmail(string email)
         {
             User user = _context.Users.FirstOrDefault(u => u.Email == email);
+
+            return user;
+        }
+
+        /// <summary>
+        /// Returns user with refresh token data, if no user is found, returns null
+        /// </summary>
+        /// <param name="tokenValue"></param>
+        /// <returns></returns>
+        public User TryGetUserWithTokenByToken(string tokenValue)
+        {
+            User user = _context.Users.Include(u => u.RefreshTokenData)
+                .FirstOrDefault(u => u.RefreshTokenData.Value == tokenValue);
 
             return user;
         }
