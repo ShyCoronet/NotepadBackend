@@ -32,10 +32,7 @@ namespace NotepadBackend.Migrations
                         .IsUnicode(true);
 
                     b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("smalldatetime");
-
-                    b.Property<long>("CreationDateTimeInSeconds")
-                        .HasColumnType("bigint");
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -50,6 +47,26 @@ namespace NotepadBackend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Notes");
+                });
+
+            modelBuilder.Entity("NotepadBackend.Model.RefreshToken", b =>
+                {
+                    b.Property<long>("TokenId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("DeathTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .IsUnicode(true);
+
+                    b.HasKey("TokenId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("NotepadBackend.Model.User", b =>
@@ -77,25 +94,18 @@ namespace NotepadBackend.Migrations
                         .HasMaxLength(50)
                         .IsUnicode(true);
 
-                    b.Property<string>("RefreshToken")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(500)")
-                        .HasMaxLength(500)
-                        .IsUnicode(true);
+                    b.Property<long?>("RefreshTokenDataTokenId")
+                        .HasColumnType("bigint");
 
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(20)")
-                        .HasMaxLength(20)
-                        .IsUnicode(true);
 
                     b.HasKey("UserId");
 
                     b.HasIndex("Login")
                         .IsUnique();
+
+                    b.HasIndex("RefreshTokenDataTokenId");
 
                     b.ToTable("Users");
                 });
@@ -107,6 +117,13 @@ namespace NotepadBackend.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("NotepadBackend.Model.User", b =>
+                {
+                    b.HasOne("NotepadBackend.Model.RefreshToken", "RefreshTokenData")
+                        .WithMany()
+                        .HasForeignKey("RefreshTokenDataTokenId");
                 });
 #pragma warning restore 612, 618
         }
