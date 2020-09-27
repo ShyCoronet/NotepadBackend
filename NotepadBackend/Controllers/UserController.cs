@@ -35,8 +35,7 @@ namespace NotepadBackend.Controllers
                 user.UserId,
                 user.Login,
                 user.Email,
-                RegistrationDateTime = 
-                    user.RegistrationDateTime.ToString("MM/dd/yyyy")
+                user.RegistrationDateTime,
             });
         }
         
@@ -52,9 +51,7 @@ namespace NotepadBackend.Controllers
                 Login = user.Login,
                 Password = user.Password,
                 Email = user.Email,
-                Role = "user",
-                RegistrationDateTime = DateTime.Now,
-                RefreshToken = _jwtService.GenerateRefreshTokenData().Token
+                RegistrationDateTime = DateTime.Now
             };
             
             _userRepository.AddUser(newUser);
