@@ -1,8 +1,10 @@
-﻿namespace NotepadBackend.Model
+﻿using System;
+
+namespace NotepadBackend.Model
 {
     public class AccessToken
     {
-        public string Token { get; set; }
-        public long LifeTimeInSeconds { get; set; }
+        public string Value { get; set; }
+        public DateTime DeathTime { get; set; }
     }
 }

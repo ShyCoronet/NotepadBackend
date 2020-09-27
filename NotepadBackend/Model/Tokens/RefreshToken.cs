@@ -1,8 +1,11 @@
-﻿namespace NotepadBackend.Model
+﻿using System;
+
+namespace NotepadBackend.Model
 {
     public class RefreshToken
     {
-        public string Token { get; set; }
-        public long LifeTimeInSeconds { get; set; }
+        public long TokenId { get; set; }
+        public string Value { get; set; }
+        public DateTime DeathTime { get; set; }
     }
 }
