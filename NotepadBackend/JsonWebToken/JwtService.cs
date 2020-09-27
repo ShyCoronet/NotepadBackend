@@ -17,8 +17,7 @@ namespace NotepadBackend.JWS
         public AccessToken GenerateAccessTokenData(User user)
         {
             DateTime utcNow = DateTime.UtcNow;
-            DateTime expires = utcNow.Add(TimeSpan.FromMinutes(
-                TokenConfiguration.AccessLifeTime));
+            DateTime expires = utcNow.AddMinutes(TokenConfiguration.AccessLifeTimeInMinutes);
 
             JwtSecurityToken jwt = new JwtSecurityToken(
                 issuer: TokenConfiguration.Issuer,
@@ -31,13 +30,12 @@ namespace NotepadBackend.JWS
                     SecurityAlgorithms.HmacSha256));
 
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            long expiresInSeconds = Convert.ToInt64(
-                expires.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+   
             
             return new AccessToken
             {
-                Token = encodedJwt,
-                LifeTimeInSeconds = expiresInSeconds
+                Value = encodedJwt,
+                DeathTime = expires
             };
         }
 
@@ -48,8 +46,7 @@ namespace NotepadBackend.JWS
         public RefreshToken GenerateRefreshTokenData()
         {
             DateTime utcNow = DateTime.UtcNow;
-            DateTime expires = utcNow.Add(TimeSpan.FromMinutes(
-                TokenConfiguration.RefreshLifeTime));
+            DateTime expires = utcNow.AddDays(TokenConfiguration.RefreshLifeTimeInDays);
 
             JwtSecurityToken jwt = new JwtSecurityToken(
                 issuer: TokenConfiguration.Issuer,
@@ -60,13 +57,11 @@ namespace NotepadBackend.JWS
                     TokenConfiguration.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             string encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            long expiresInSeconds = Convert.ToInt64(
-                expires.Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
 
             return new RefreshToken
             {
-                Token = encodedJwt,
-                LifeTimeInSeconds = expiresInSeconds
+                Value = encodedJwt,
+                DeathTime = expires
             };
         }
 
@@ -79,9 +74,9 @@ namespace NotepadBackend.JWS
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString())
             };
+            
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "GetToken", ClaimTypes.NameIdentifier,
                 ClaimTypes.Role);
 
